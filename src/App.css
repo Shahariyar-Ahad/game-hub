@@ -1,2 +1,11 @@
 @plugin "daisyui";
 @import "tailwindcss";
+body {
+  background:rgb(24, 180, 154);
+  color: black 
+  
+} 
+.my-btn{
+    @apply  btn w-full bg-red-600
+    text-white font-semibold border-none hover:scale-105 transition-transform duration-200
+}
