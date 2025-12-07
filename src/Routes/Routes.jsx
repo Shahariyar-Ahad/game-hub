@@ -1,58 +1,110 @@
-import { createBrowserRouter } from "react-router";
-import MainLayout from "../Mainlayout/MainLayout";
-import Home from "../Pages/Home";
+import { createBrowserRouter } from "react-router-dom"; // Changed to 'react-router-dom'
 
-import MyCommunity from "../Pages/MyCommunity";
+import MainLayout from "../Mainlayout/MainLayout"
+import Home from "../Pages/Home";
+import PetsSupply from "../Pages/PetsSupply";
+import CategoryFiltered from "../Pages/CategoryFiltered";
+import ListingDetails from "../Pages/ListingDetails";
+import AddListing from "../Pages/AddListing";
+import Mylisting from "../Pages/Mylisting";
+import Myorders from "../Pages/Myorders";
 import Login from "../Pages/Login";
 import Register from "../Pages/Register";
-import Download from "../Pages/Download";
-import ALLGames from "../Pages/Allgames";
-import ErrorPage from "../Pages/ErrorPage";
-import Profile from "../Pages/Profile";
 import PrivateRoute from "./PrivateRoute";
+import Profile from "../Pages/Profile";
+import UpdateListing from "../Pages/UpdateListing";
 import NotFound from "../Pages/NotFound";
-import ForgetPassword from "../Pages/ForgetPass";
 
-const router =createBrowserRouter([{
-path:'/',
-element:<MainLayout></MainLayout>,
-errorElement: <NotFound></NotFound>,
-children:[
-    {path:'/',
-    element:<Home></Home>,
-    },
-    {path:'/allGames',
-    element:<ALLGames></ALLGames>  ,
-    },
-    {path:'/community',
-    element:<MyCommunity></MyCommunity>  ,
-    },
+const router = createBrowserRouter([
+  {
+    path: "/",
     
-    {path:'/login',
-    element:<Login></Login>,
-    },
-    {path:'/forgetpass',
-    element:<ForgetPassword></ForgetPassword>,
-    },
-    {path:'/register',
-    element:<Register></Register>,
-    },
-    {path: '/download/:id',
-  element: 
-    <PrivateRoute>
-      <Download />
-    </PrivateRoute>
-  
-    },
-    {path:'/profile',
-    element: <PrivateRoute> <Profile></Profile> </PrivateRoute>           ,
-    },
+    element: <MainLayout></MainLayout>,
+   
+    children: [
+      { path: "/", element: <Home /> },
+
+      // Pets + Products Page
+      { path: "/pets-supplies", element: <PetsSupply /> },
+
+      // Category Filter Page
+      {
+        path: "/category/:categoryName",
+        element:<CategoryFiltered></CategoryFiltered> ,
+      },
+
     
-    
+      {
+        path: "/listing/:id",
+        element:<PrivateRoute><ListingDetails></ListingDetails></PrivateRoute> 
+      },
 
-]
+           {
+        path: "/add-listing",
+        element: (
+          <PrivateRoute>
+            <AddListing></AddListing>
+            </PrivateRoute>
+            
+          
+        ),
+      },
 
-}]) 
+     
+      {
+        path: "/my-listings",
+        element: (
+          <PrivateRoute>
+            <Mylisting></Mylisting>
+          </PrivateRoute>
+        ),
+      }, 
+      {
+        path: "/update-listing/:id",
+        element: (
+          <PrivateRoute>
+            <UpdateListing></UpdateListing>
+          </PrivateRoute>
+        ),
+      }, 
+      
+      
 
-console.log(router)
-export default router
+     
+      {
+        path: "/my-orders",
+        element: (
+          <PrivateRoute><Myorders></Myorders></PrivateRoute>
+           
+          
+        ),
+      },
+
+      // Auth Pages
+      { path: "/login", element: <Login></Login> },
+      { path: "/register", element:<Register></Register> },
+
+      
+      {
+        path: "/profile",
+        element: (
+        <PrivateRoute> <Profile></Profile> </PrivateRoute>
+            
+        
+        ),
+      },
+      {
+        path: "*",
+        element: (
+       <NotFound></NotFound>
+            
+        
+        ),
+      },
+      
+      
+    ],
+  },
+]);
+
+export default router;

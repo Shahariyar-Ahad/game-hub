@@ -1,49 +1,47 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router';
-import auth from '../Firebase/Firebase.config';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../provider/AuthProvider';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'; // ✅ React-Toastify
 
 const Login = () => {
-  const { setUser, handleGoogleSignin } = useContext(AuthContext);
+  const { setUser, handleGoogleSignin, loginWithEmailAndPassword, setLoading } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
-  // Email/Password login
   const handleSubmit = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const pass = e.target.password.value;
+    setLoading(true);
 
-    signInWithEmailAndPassword(auth, email, pass)
+    loginWithEmailAndPassword(email, pass)
       .then((userCredential) => {
-        const user = userCredential.user;
-        setUser(user);
-
-        // Toast and navigate
-        toast.success("Login successful!");
-        navigate("/profile");
+        setUser(userCredential.user);
+        toast.success("Login successful! Welcome back.");
+        navigate(from, { replace: true });
+        setLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
-        toast.error("Login failed. Check your credentials!");
+      .catch((err) => {
+        console.error(err);
+        toast.error("Login failed. Check your email or password!");
+        setLoading(false);
       });
   };
 
-  // Google login
   const googleSignIn = () => {
+    setLoading(true);
     handleGoogleSignin()
       .then((result) => {
-        const user = result.user;
-        setUser(user);
-
-        // Toast and navigate
-        toast.success("Login successful!");
-        navigate("/profile");
+        setUser(result.user);
+        toast.success("Google login successful!");
+        navigate(from, { replace: true });
+        setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
-        toast.error("Google login failed");
+        console.error(err);
+        toast.error("Google login failed.");
+        setLoading(false);
       });
   };
 
@@ -51,52 +49,31 @@ const Login = () => {
     <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 p-6 lg:p-10 text-white">
       <div>
         <h1 className='text-4xl font-bold font-sans'>
-          Welcome to <span className='text-[#DA2C43] italic font-extrabold text-5xl'>Game Hub</span>
+          Welcome to <span className='text-yellow-500 italic font-extrabold text-5xl'>PawMart</span> 🐾
         </h1>
-        <p>
-          For download game you need to login first, if you have no account then create your account.<br />
-          Click Register button
-        </p>
+        <p>Log in to access your listings and orders.<br />New here? Register now.</p>
       </div>
       <div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="example@email.com"
+            <input type="email" name="email" placeholder="example@pawmart.com"
               className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white"
-            />
+              required />
           </div>
 
-          <div className="relative">
+          <div>
             <label className="block text-sm font-medium mb-1">Password</label>
-            <input
-              type='text'
-              name="password"
-              placeholder="••••••••"
+            <input type='password' name="password" placeholder="••••••••"
               className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white"
-            />
-            <span className='absolute right-2 top-9 cursor-pointer z-50'></span>
+              required />
           </div>
 
-          <button type="submit" className="my-btn">Login</button>
+          <button type="submit" className="my-btn bg-blue-500 hover:bg-blue-600">Login</button>
 
           <Link to='/register' className="btn w-full text-black font-bold border-none hover:scale-105 transition-transform duration-200 bg-[#FFD700]">
-            Create your account
+            Don’t have an account? Register here
           </Link>
-
-          <button
-  className="hover:underline cursor-pointer"
-  type="button"
-  onClick={() =>
-    navigate("/forget-password", { state: { email: document.querySelector('input[name="email"]').value } })
-  }
->
-  Forget password?
-</button>
-
 
           <div className="flex items-center justify-center gap-2 my-2">
             <div className="h-px w-16 bg-white/30"></div>
@@ -104,29 +81,10 @@ const Login = () => {
             <div className="h-px w-16 bg-white/30"></div>
           </div>
 
-          <button
-            type="button"
-            onClick={googleSignIn}
-            className="flex items-center justify-center gap-3 bg-white text-gray-800 px-5 py-2 rounded-lg w-full font-semibold hover:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="google"
-              className="w-5 h-5"
-            />
+          <button type="button" onClick={googleSignIn}
+            className="flex items-center justify-center gap-3 bg-white text-gray-800 px-5 py-2 rounded-lg w-full font-semibold hover:bg-gray-100 transition-colors">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="google" className="w-5 h-5" />
             Continue with Google
-          </button>
-
-          <button
-            type="button"
-            className="flex items-center justify-center gap-3 bg-white text-gray-800 px-5 py-2 rounded-lg w-full font-semibold hover:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/1280px-Facebook_f_logo_%282019%29.svg.png"
-              alt="facebook"
-              className="w-5 h-5"
-            />
-            Continue with Facebook
           </button>
         </form>
       </div>
@@ -135,3 +93,4 @@ const Login = () => {
 };
 
 export default Login;
+

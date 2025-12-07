@@ -1,172 +1,213 @@
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Bars } from 'react-loader-spinner'; 
 
-import { useEffect, useState } from "react";
-import useGames from "../Hooks/UseHook";
-import GameCard from "../Components/GameCard";
-import { NavLink, useNavigate } from "react-router";
-import { useSpring, animated } from "@react-spring/web";
-import LoadingPage from "./Loading";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../Components/Carousel";
+
+
+
+
+
+
+
 
 const Home = () => {
-  const { games,loading } = useGames();
+    const [recentListings, setRecentListings] = useState([]);
+    const [categories, setCategories] =useState([])
+    const [loading, setLoading] = useState(true);
 
-  const showGames = [...games]
-    .sort((a, b) => parseFloat(b.ratings) - parseFloat(a.ratings))
-    .slice(0, 8);
+    
+    useEffect(() => {
+      fetch('http://localhost:3100/recent-listings')
+      .then(res => res.json())
+      .then(data =>setRecentListings(data))
+      .catch(err=> console.log(err)) 
 
-  // GIFs with duration and overlay content
-  const gifs = [
-    { 
-      src: "/images/Glow Elder Scrolls GIF by Xbox.gif", 
-      duration: 6000,
-      headline: "The Witcher 3",
-      description: "Embark on an epic adventure in the world of Geralt of Rivia",
-      buttonText: "Play Now"
-    },
-    { 
-      src: "/images/red dead redemption 2 draw GIF by Rockstar Games.gif", 
-      duration: 4000,
-      headline: "Red Dead Redemption 2",
-      description: "Experience the wild west like never before",
-      buttonText: "Out Now"
-    },
-    { 
-      src: "/images/Fps Game GIF by Battlefield (1).gif", 
-      duration: 8000,
-      headline: "Battlefield FPS",
-      description: "Engage in fast-paced action across battlefields",
-      buttonText: "Download"
-    },
-  ];
+      fetch('./category.json')
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(err => console.log(err))
+        
+        setTimeout(() => {
+        
+            setLoading(false);
+        }, 1500);
+    }, []);
 
-  const [current, setCurrent] = useState(0);
-  const navigate=useNavigate()
-  const doNavigate=() => {
-    navigate('/allgames')
-  }
-  // Auto Slide based on GIF duration
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setCurrent((prev) => (prev + 1) % gifs.length);
-    }, gifs[current].duration);
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-[50vh]">
+                <Bars height="80" width="80" color="#FF6347" ariaLabel="loading-indicator" />
+            </div>
+        );
+    }
+      const sixlisting =recentListings.slice(0,6)
+    return (
+        <div className="text-white">
 
-    return () => clearTimeout(timeout);
-  }, [current]);
+    {/* 1. Banner / Hero Section */}
+    <div className="relative h-[50vh] sm:h-[60vh] md:h-[70vh] rounded-xl overflow-hidden my-6 md:my-8">
+        
+        <Carousel className="h-full w-full">
+            <CarouselContent>
 
-  // React Spring Animation for smooth slide
-  const slideAnimation = useSpring({
-    transform: `translateX(-${current * 100}%)`,
-    config: { tension: 120, friction: 18 },
-  });
+                {/* Image 1 */}
+                <CarouselItem className="relative">
+                    <img 
+                        src="/images/pets.jpg" 
+                        className="w-full h-[50vh] sm:h-[60vh] md:h-[70vh] object-cover" 
+                        alt="Pets"
+                    />
+                    {/* Text for Image 1 */}
+                    <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 
+                        bg-gradient-to-r from-[#FF7A3D]/90 to-[#FF4500]/90 
+                        text-white px-5 py-3 sm:px-7 sm:py-4 rounded-xl shadow-xl backdrop-blur-md">
+                        <h2 className="text-xl sm:text-3xl font-extrabold drop-shadow-md">Find Your Perfect Pet</h2>
+                        <p className="text-xs sm:text-sm italic opacity-90">Cute and loving furry friends waiting for you</p>
+                    </div>
+                </CarouselItem>
 
-  return (
-   <div className="w-full">
-  {/* Main container */}
-  <div className="container mx-auto px-4">
+                {/* Image 2 */}
+                <CarouselItem className="relative">
+                    <img 
+                        src="/images/adopt.jpg" 
+                        className="w-full h-[50vh] sm:h-[60vh] md:h-[70vh] object-cover" 
+                        alt="Adoption"
+                    />
+                    {/* Text for Image 2 */}
+                    <div className="absolute bottom-4 left-4 sm:bottom-8 sm:left-8 
+                        bg-gradient-to-r from-gray-900/95 to-black/70 
+                        text-white px-5 py-3 sm:px-8 sm:py-5 rounded-2xl border-l-4 border-[#FF6347] shadow-2xl backdrop-blur-sm">
+                        <h2 className="text-2xl sm:text-4xl font-extrabold text-[#79FFCC] drop-shadow-lg">
+                            Happy Pets, Happy Life
+                        </h2>
+                        <p className="text-sm sm:text-base italic text-gray-100 mt-1">
+                            Create beautiful memories with your pet
+                        </p>
+                    </div>
+                </CarouselItem>
 
-    {/* ================= Banner ================= */}
-    <div className="overflow-hidden rounded-2xl mt-6 relative 
-      h-[250px] sm:h-[350px] md:h-[450px] lg:h-[550px] xl:h-[650px]">
+                {/* Image 3 */}
+                <CarouselItem className="relative">
+                    <img 
+                        src="/images/happy.jpg" 
+                        className="w-full h-[50vh] sm:h-[60vh] md:h-[70vh] object-cover" 
+                        alt="Happy"
+                    />
+                    {/* Text for Image 3 */}
+                    <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 
+                        bg-gradient-to-r from-red-400 to-red-500
+                        text-white px-5 py-3 sm:px-7 sm:py-4 rounded-xl border-l-4 border-yellow-400 shadow-xl">
+                        <h2 className="text-xl sm:text-3xl font-extrabold text-black drop-shadow-lg">
+                            Happy Pets, Happy Life
+                        </h2>
+                        <p className="text-xs sm:text-sm italic text-gray-200">
+                            Create beautiful memories with your pet
+                        </p>
+                    </div>
+                </CarouselItem>
 
-      {/* Sliding GIFs */}
-      <animated.div
-        style={slideAnimation}
-        className="flex w-full h-full"
-      >
-        {gifs.map((gif, index) => (
-          <img
-            key={index}
-            src={gif.src}
-            alt={`banner-${index}`}
-            className="w-full h-full object-cover flex-shrink-0 rounded-2xl"
-          />
-        ))}
-      </animated.div>
+            </CarouselContent>
 
-      {/* Overlay content */}
-      <div
-        className="
-          absolute top-0 left-0 w-full h-full flex flex-col
-          justify-center
-          items-start 
-          px-6 py-10 
-          sm:px-10 sm:py-16 
-          md:px-16 md:py-20 
-          lg:px-24 lg:py-28
-          text-white
-          bg-gradient-to-t from-black/40 to-transparent
-          rounded-2xl
-        "
-      >
-        <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 drop-shadow-lg">
-          {gifs[current].headline}
-        </h1>
-
-        <p className="mb-5 text-sm sm:text-base md:text-xl max-w-xl drop-shadow-lg">
-          {gifs[current].description}
-        </p>
-
-        <button
-          onClick={doNavigate}
-          className="bg-red-600 px-4 sm:px-6 py-2 rounded text-white font-semibold hover:bg-red-700 transition"
-        >
-          {gifs[current].buttonText}
-        </button>
-      </div>
-    </div>
-
-    {/* ================= Content ================= */}
-    <div>
-
-      {/* Section Title */}
-      <div className="mt-10 mb-5 px-4">
-        <h1 className="text-xl sm:text-2xl font-bold text-black">
-          Discover Something Legendary
-        </h1>
-      </div>
-
-      {/* Popular Games */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4">
-        {showGames.map((game) => (
-          <GameCard key={game.id} game={game} />
-        ))}
-      </div>
-
-      {/* Explore More */}
-      <div className="my-12 text-center">
-        <NavLink to="/allgames" className="btn btn-success text-black">
-          Explore more
-        </NavLink>
-      </div>
-
-      {/* Newsletter */}
-      <div className="my-16 text-center px-4">
-        <h2 className="text-xl sm:text-2xl font-bold text-black">Subscribe to our Newsletter</h2>
-        <p className="text-sm sm:text-base mt-1">Get the latest games and updates delivered to your inbox.</p>
-
-        <form className="mt-4 flex flex-col sm:flex-row justify-center gap-2">
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="border p-2 rounded w-full sm:w-auto"
-          />
-          <button
-            type="submit"
-            className="bg-pink-600 text-white px-4 py-2 rounded"
-          >
-            Subscribe
-          </button>
-        </form>
-      </div>
+            <CarouselPrevious className="hidden sm:flex" /> {/* Hide arrows on mobile for better touch experience */}
+            <CarouselNext className="hidden sm:flex" />
+        </Carousel>
 
     </div>
-  </div>
+
+    <hr className="border-gray-700 my-6 md:my-10" />
+
+    {/* 2. Category Section */}
+    <section className="py-6 md:py-12">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 md:mb-10 text-[#FF6347]">Browse by Category</h2>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto px-4">
+            {categories.map((cat) => (
+                <Link 
+                    key={cat.name} 
+                    to={`/category/${encodeURIComponent(cat.path)}`} 
+                    className="text-center p-4 md:p-6 bg-gray-900 rounded-xl shadow-2xl 
+                        hover:bg-red-400 transition-all duration-300 
+                        transform hover:scale-105 hover:-translate-y-1 
+                        border-t-4 border-t-[#FF6347]"
+                >
+                    <span className="text-4xl md:text-6xl block mb-2 md:mb-3">{cat.icon}</span>
+                    <p className="text-sm md:text-lg font-semibold text-white">{cat.name}</p>
+                </Link>
+            ))}
+        </div>
+    </section>
+    
+    <hr className="border-gray-700 my-6 md:my-10" />
+
+    {/* 3. Recent Listings Section (Latest 6 from MongoDB) */}
+    <section className="py-6 md:py-12">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 md:mb-10 text-[#FF6347]">Latest Listings (Adopt or Buy)</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 px-4">
+            {sixlisting.map((item) => (
+                <div key={item.id} className="bg-gray-900 rounded-xl shadow-2xl overflow-hidden group">
+                    <div className="flex justify-center">
+                        {/* Modified: Image size fixed for mobile/small screens */}
+                        <img 
+                            src={item.img} 
+                            alt={item.name} 
+                            className="w-full h-48 md:h-56 object-cover group-hover:opacity-80 transition-opacity duration-300" 
+                        />
+                    </div>
+                    <div className="p-5">
+                        <h3 className="text-xl md:text-2xl font-bold mb-1 text-white truncate">{item.name}</h3>
+                        <p className="text-xs md:text-sm text-gray-400 mb-3">{item.location}</p>
+                        
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="badge badge-sm md:badge-lg bg-yellow-600 text-white font-bold border-none">{item.category}</span>
+                            <p className="text-lg md:text-xl font-extrabold text-[#79FFCC]">
+                                {typeof item.price === 'number' ? `৳${item.price}` : item.price}
+                            </p>
+                        </div>
+
+                        <Link 
+                            to={`/listing/${item?._id}`} 
+                            className="my-btn mt-4 flex items-center justify-center text-sm md:text-md"
+                        >
+                            See Details
+                        </Link>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </section>
+    
+    <hr className="border-gray-700 my-6 md:my-10" />
+
+    {/* 4. NEW: "Why Adopt from PawMart?" - Awareness Section */}
+    <section className="py-8 md:py-16 bg-gray-900 rounded-xl shadow-2xl mb-6 md:mb-10 p-6 md:p-10 border-4 md:border-8 border-[#FF6347] mx-4">
+        <h2 className="text-3xl md:text-4xl font-extrabold mb-6 md:mb-8 text-white text-center">
+            <span className='text-[#FF6347]'>Why Adopt </span> from PawMart? 🐾
+        </h2>
+        <div className="text-sm md:text-lg space-y-4 text-gray-300 max-w-4xl mx-auto">
+            <p className='flex items-start gap-3'>
+                <span className="text-xl md:text-2xl text-yellow-400 flex-shrink-0">💡</span>
+                **Saving a Life:** By adopting, you give a deserving animal a second chance at a loving home, reducing the burden on local shelters.
+            </p>
+            <p className='flex items-start gap-3'>
+                <span className="text-xl md:text-2xl text-yellow-400 flex-shrink-0">💰</span>
+                **Cost-Effective:** Adoption fees are often much lower than purchasing a pet, and usually include initial vaccinations and spay/neuter surgery.
+            </p>
+            <p className='flex items-start gap-3'>
+                <span className="text-xl md:text-2xl text-yellow-400 flex-shrink-0">💖</span>
+                **True Companionship:** Rescue pets often display unique gratitude and loyalty, making the bond incredibly rewarding. **Adopt, Don't Shop.**
+            </p>
+        </div>
+    </section>
 </div>
-
-  );
+    );
 };
 
 export default Home;
-
-
-
-

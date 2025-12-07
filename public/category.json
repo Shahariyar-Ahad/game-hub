@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Pets (Adoption)",
+    "icon": "🐶",
+    "path": "Pets (Adoption)"
+  },
+  {
+    "name": "Pet Food",
+    "icon": "🥩",
+    "path": "Pet Food"
+  },
+  {
+    "name": "Accessories",
+    "icon": "🧸",
+    "path": "Accessories"
+  },
+  {
+    "name": "Pet Care Products",
+    "icon": "🛁",
+    "path": "Pet Care Products"
+  }
+]

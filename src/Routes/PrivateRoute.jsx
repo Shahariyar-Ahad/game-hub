@@ -1,18 +1,17 @@
 import { useContext } from 'react';
 import { AuthContext } from '../provider/AuthProvider';
 import { Navigate, useLocation } from 'react-router';
-import { toast } from "react-toastify";
+import LoadingPage from '../Pages/Loading';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
   const location = useLocation();
 
   if (loading) {
-    return <p className="text-white text-center mt-10">Loading...</p>;
+    return <LoadingPage />;
   }
 
   if (!user) {
-    toast.error("Please login/register first!");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

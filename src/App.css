@@ -1,11 +1,19 @@
 @plugin "daisyui";
 @import "tailwindcss";
+
+
 body {
-  background:rgb(24, 180, 154);
-  color: black 
-  
+    
+    background: #1f2937; 
+    
+    
+    color: #ffffff; 
+    min-height: 100vh;
 } 
+
+
 .my-btn{
-    @apply  btn w-full bg-red-600
-    text-white font-semibold border-none hover:scale-105 transition-transform duration-200
+   
+    @apply btn w-full bg-[#FF6347]
+    text-white font-semibold border-none hover:bg-[#E5533D] hover:scale-105 transition-transform duration-200
 }
